@@ -1,3 +1,18 @@
 {
-  "printWidth": 150
+  "printWidth": 150,
+  "singleQuote": true,
+  "endOfLine": "lf",
+  "semi": false,
+  "tabWidth": 2,
+  "useTabs": true,
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "options": {
+        "semi": true,
+        "printWidth": 120
+      }
+    }
+  ]
 }
