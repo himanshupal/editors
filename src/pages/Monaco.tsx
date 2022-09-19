@@ -1,37 +1,52 @@
-import { editor } from 'monaco-editor/esm/vs/editor/editor.api'
-import { useState, useEffect, useRef } from 'react'
-import { getCode } from '@/utils/getLogs'
+import { editor } from "monaco-editor/esm/vs/editor/editor.api";
+import { useState, useEffect, useRef } from "react";
+import { getCode } from "@/utils/getLogs";
+import { SolidityId } from "@/workers";
 
 const Editor = () => {
-  let created = false
-  const monacoEl = useRef<HTMLDivElement>(null)
-  const [editorEl, setEditorEl] = useState<editor.IStandaloneCodeEditor>()
+  const created = useRef<boolean>(false);
+  const mountElement = useRef<HTMLDivElement | null>(null);
+  const [_editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(null);
+
+  const defaultConfigOptions: editor.IStandaloneEditorConstructionOptions = {
+    smoothScrolling: true,
+    automaticLayout: true,
+    value: getCode(),
+    theme: SolidityId,
+    language: SolidityId,
+    fastScrollSensitivity: 7,
+    minimap: {
+      enabled: false,
+    },
+    scrollbar: {
+      verticalScrollbarSize: 5,
+      horizontalScrollbarSize: 7.5,
+    },
+  };
 
   useEffect(() => {
-    if (!created && !editorEl && monacoEl) {
-      setEditorEl(
-        editor.create(monacoEl.current!, {
-          // value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
-          // language: 'typescript',
-          value: getCode(),
-          theme: 'myCoolTheme',
-          language: 'myCustomLanguage'
-        })
-      )
-      created = true
+    if (!mountElement.current) return;
+
+    const _editor = editor.create(mountElement.current, defaultConfigOptions);
+
+    if (!created.current) {
+      setEditor(_editor);
+      created.current = true;
     }
 
     function callback() {
-      if (created && editorEl) {
-        editorEl.dispose()
-        created = false
-      }
+      _editor.dispose();
     }
 
-    return callback
-  }, [monacoEl.current])
+    return callback;
+  }, [mountElement.current]);
 
-  return <div ref={monacoEl} className="full-page" />
-}
+  useEffect(() => {
+    if (!_editor) return;
+    console.debug({ _editor });
+  }, [_editor]);
 
-export default Editor
+  return <div className="full-page" ref={mountElement} />;
+};
+
+export default Editor;

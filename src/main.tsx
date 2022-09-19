@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
 import { StrictMode } from 'react'
 import '@/main.css'
-import '@/workers'
 
 import CodeMirror from '@/pages/CodeMirror'
 import Monaco from '@/pages/Monaco'
