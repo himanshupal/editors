@@ -1,6 +1,7 @@
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
-import codeSample from '@/utils/codeSample';
 import { SolidityId } from '@/workers';
+
+import codeSample from '@/utils/codeSample';
 
 export const defaultMonacoConfig: editor.IStandaloneEditorConstructionOptions = {
 	fontFamily: 'Cascadia Code, Jetbrains Mono',
