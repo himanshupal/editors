@@ -1,5 +1,4 @@
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
-import { SolidityId } from '@/workers';
 
 window.editor = editor;
 
@@ -10,8 +9,8 @@ export const defaultMonacoConfig: editor.IStandaloneEditorConstructionOptions = 
 	smoothScrolling: true,
 	automaticLayout: true,
 	fontLigatures: true,
-	theme: SolidityId,
-	language: SolidityId,
+	theme: 'vs-dark',
+	language: 'typescript',
 	fastScrollSensitivity: 7,
 	occurrencesHighlight: false,
 	renderLineHighlight: 'all',
