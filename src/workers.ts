@@ -27,8 +27,6 @@ self.MonacoEnvironment = {
 	},
 };
 
-languages.typescript?.typescriptDefaults.setEagerModelSync(true);
-
 // Register myCustomLaguage
 
 languages.register({
