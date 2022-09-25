@@ -16,9 +16,9 @@ const Home = () => {
 	const mountElement = useRef<HTMLDivElement | null>(null)
 	const editorInstance = useRef<editor.IStandaloneCodeEditor | null>(null)
 
-	const [tabs, setTabs] = useState<Array<Tab>>([])
 	const [currentModel, setCurrentModel] = useState<editor.ITextModel | null>(null)
 	const [previousModel, setPreviousModel] = useState<editor.ITextModel | null>(null)
+	const [tabs, setTabs] = useState<Array<Tab>>(editor.getModels().map(({ id }) => ({ id, title: id })))
 	const [editorState, setEditorState] = useState<Record<string, editor.ICodeEditorViewState | null>>({})
 
 	const [langModalOpen, setLangModalOpen] = useState<boolean>(false)
@@ -26,6 +26,8 @@ const Home = () => {
 	useEffect(() => {
 		if (!mountElement.current) return
 		editorInstance.current = editor.create(mountElement.current, defaultEditorConfig)
+		const defaultModels = editor.getModels()
+		if (defaultModels.length) changeModelTo(defaultModels[0])
 		const onCreateListener = editor.onDidCreateModel((model) => {
 			if (!editorInstance.current) return console.debug(errorMessage.noEditor)
 			changeModelTo(model)
@@ -118,6 +120,7 @@ const Home = () => {
 					Double Click anywhere for a new tab
 				</div>
 			)}
+
 			<div className={join(!!editor.getModels().length && 'editor')} ref={mountElement} />
 
 			<LanguageSelection

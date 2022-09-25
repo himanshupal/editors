@@ -1,8 +1,10 @@
+import codeSample from '@/utils/codeSample';
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 
 window.editor = editor;
 
 export const defaultEditorConfig: editor.IStandaloneEditorConstructionOptions = {
+	model: editor.createModel(codeSample.ERC20, 'sol'),
 	fontFamily: 'Cascadia Code, Jetbrains Mono',
 	fontSize: 12,
 	mouseWheelZoom: true,
