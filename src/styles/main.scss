@@ -1,5 +1,3 @@
-@import 'variables.scss';
-
 :root {
 	font-size: 14px;
 }
@@ -7,21 +5,33 @@
 body {
 	margin: unset;
 	overflow: hidden;
-	font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-		sans-serif;
+	background: $tabs;
+	color: invert($color: $tabs);
+	font-family: 'Nunito', 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+		'Helvetica Neue', sans-serif;
 }
 
 .pointer {
 	cursor: pointer;
 }
 
-.full-page {
+.fullpage {
 	width: 100%;
 	height: 100vh;
 
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+}
+
+.no-events {
+	pointer-events: none;
+}
+
+.fixed {
+	position: fixed;
+	left: 0;
+	top: 0;
 }
 
 .editor {

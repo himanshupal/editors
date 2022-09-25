@@ -1,5 +1,7 @@
-const CloseIcon = ({ width = 24, height = 24, color = 'currentColor' }) => (
+const CloseIcon = ({ width = 24, height = 24, color = 'currentColor', className = 'icon', onClick = () => {} }) => (
 	<svg
+		className={className}
+		onClick={onClick}
 		xmlns="http://www.w3.org/2000/svg"
 		width={width}
 		height={height}

@@ -1,0 +1,53 @@
+.wrapper {
+	backdrop-filter: blur(2.5px);
+	justify-content: center;
+	align-items: center;
+}
+
+.modal {
+	background: $modal;
+	border-radius: 0.35rem;
+	max-height: 80vh;
+	padding: 1rem;
+	width: 57.5vw;
+	display: flex;
+	z-index: 1;
+
+	&__body {
+		margin-left: 0.75rem;
+		overflow-y: auto;
+		max-height: 100%;
+	}
+
+	&__title {
+		@include flexAlignCenter;
+		justify-content: space-between;
+		color: invert($color: $modal);
+		font-size: 1.5rem;
+	}
+
+	&__lang {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		max-height: 500px;
+		gap: 0.5rem;
+
+		&__item {
+			background: darken($color: $modal, $amount: 5%);
+			transition: all 50ms ease-in-out;
+			color: invert($color: $modal);
+			@include flexAlignCenter;
+			justify-content: center;
+			border-radius: 0.35rem;
+			padding: 0.5rem 1rem;
+			white-space: nowrap;
+			font-weight: 500;
+			flex: 1;
+
+			&:hover {
+				background: darken($color: $modal, $amount: 10%);
+			}
+		}
+	}
+}
