@@ -78,3 +78,8 @@ body {
 		border-top: 1px solid rgb(102, 0, 255);
 	}
 }
+
+.row {
+	display: flex;
+	flex-direction: row;
+}

@@ -1,1 +1,1 @@
-export const join = (...classes: Array<string | boolean>) => classes.filter((x) => x).join(' ');
+export const join = (...classes: Array<string | boolean | undefined>) => classes.filter(Boolean).join(' ');

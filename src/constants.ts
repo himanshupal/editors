@@ -1,4 +1,5 @@
 export const logsId = 'logs';
+export const abiId = 'abi';
 
 export const errorMessage = {
 	noEditor: 'Editor not found...',
@@ -79,6 +80,7 @@ export const supportedLanguages = [
 	{ key: 'scss', title: 'SCSS / SASS' },
 	{ key: 'shell', title: 'Shell' },
 	{ key: 'sol', title: 'Solidity' },
+	{ key: 'logs', title: 'Logs' },
 	// { key: 'aes', title: 'Sophia' },
 	// { key: 'sparql', title: 'SPARQL' },
 	{ key: 'sql', title: 'SQL' },

@@ -1,0 +1,34 @@
+.activityBar {
+	min-height: calc(100% - 1rem);
+	flex-direction: column;
+	align-items: center;
+	display: flex;
+
+	&Item {
+		padding: 0.5rem;
+		height: 2.25rem;
+		width: 2.25rem;
+
+		display: grid;
+		place-content: center;
+		border-left: 2px solid transparent;
+
+		transition: background-color 100ms ease-in-out;
+
+		&Active {
+			background-color: lighten(#171c28, 25%);
+		}
+
+		&:not(&Active) {
+			&:hover {
+				background-color: #171c28;
+			}
+		}
+
+		img {
+			image-rendering: optimizeSpeed;
+			width: 24px;
+			height: 24px;
+		}
+	}
+}

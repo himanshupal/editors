@@ -3,6 +3,7 @@ import { editor } from 'monaco-editor/esm/vs/editor/editor.api'
 import { errorMessage, supportedLanguages } from '@/constants'
 import { defaultEditorConfig } from '@/config/editor'
 import { useState, useEffect, useRef } from 'react'
+import ActivityBar from '@/components/ActivityBar'
 import CloseIcon from '@/assets/icons/Close'
 import codeSample from '@/utils/codeSample'
 import { join } from '@/utils'
@@ -80,7 +81,7 @@ const Home = () => {
 	const newTab = (language?: string | null) => {
 		if (language === null) return
 		if (!editorInstance.current) return console.debug(errorMessage.noEditor)
-		const newModel = editor.createModel(language === 'sol' ? codeSample.ERC20 : '', language)
+		const newModel = editor.createModel(language === 'sol' ? codeSample.ERC20 : language === 'logs' ? codeSample.logs : '', language)
 		changeModelTo(newModel)
 	}
 
@@ -103,32 +104,36 @@ const Home = () => {
 	}
 
 	return (
-		<div className="fullpage" onDoubleClick={() => (tabs.length ? null : setLangModalOpen(true))}>
-			{tabs.length ? (
-				<div className="tabs pointer" onDoubleClick={() => setLangModalOpen(true)}>
-					{tabs.map(({ id, title }) => (
-						<div key={id} className={join('tab', id === currentModel?.id && 'active')} onClick={() => setActiveTab(id)}>
-							{title}
-							<span className="tab__close" onClick={() => closeTab(id)}>
-								<CloseIcon width={14} height={14} />
-							</span>
-						</div>
-					))}
-				</div>
-			) : (
-				<div className="editor no-events" style={{ textAlign: 'center' }}>
-					Double Click anywhere for a new tab
-				</div>
-			)}
+		<div className="fullpage row">
+			<ActivityBar />
 
-			<div className={join(!!editor.getModels().length && 'editor')} ref={mountElement} />
+			<div className="fullpage" onDoubleClick={() => (tabs.length ? null : setLangModalOpen(true))}>
+				{tabs.length ? (
+					<div className="tabs pointer" onDoubleClick={() => setLangModalOpen(true)}>
+						{tabs.map(({ id, title }) => (
+							<div key={id} className={join('tab', id === currentModel?.id && 'active')} onClick={() => setActiveTab(id)}>
+								{title}
+								<span className="tab__close" onClick={() => closeTab(id)}>
+									<CloseIcon width={14} height={14} />
+								</span>
+							</div>
+						))}
+					</div>
+				) : (
+					<div className="editor no-events" style={{ textAlign: 'center' }}>
+						Double Click anywhere for a new tab
+					</div>
+				)}
 
-			<LanguageSelection
-				title="Select Language"
-				onClose={(s) => (setLangModalOpen(false), newTab(s))}
-				languages={supportedLanguages}
-				open={langModalOpen}
-			/>
+				<div className={join(!!editor.getModels().length && 'editor')} ref={mountElement} />
+
+				<LanguageSelection
+					title="Select Language"
+					onClose={(s) => (setLangModalOpen(false), newTab(s))}
+					languages={supportedLanguages}
+					open={langModalOpen}
+				/>
+			</div>
 		</div>
 	)
 }
