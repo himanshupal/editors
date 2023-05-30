@@ -934,6 +934,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cuid@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "cuid@npm:3.0.0"
+  checksum: f9a344bd90e26b62f75a86b616ad717bad88b20b02df25c6e4008dd2c0948b081bd72ad8075b25ae644dce7fc367a43c622954e88aed972b72b1f132416faa4e
+  languageName: node
+  linkType: hard
+
 "debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.3.3":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
@@ -960,6 +967,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dexie-react-hooks@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "dexie-react-hooks@npm:1.1.3"
+  peerDependencies:
+    "@types/react": ">=16"
+    dexie: ">=3.1.0-alpha.1 <5.0.0"
+    react: ">=16"
+  checksum: 77fc500c690f2036072aef3aa1aa1195f38048afcb2bf6e4b101bfd65f1facb112cc0b7e40cac7ba987ee0dca637a97f1fd174b307298df961040768d8c1d6f8
+  languageName: node
+  linkType: hard
+
+"dexie@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "dexie@npm:3.2.3"
+  checksum: 54fd7bc94364ed601dc2d53f8b488e49ac61d4ec532f001a68fde9ffccb4bf3c6a8af310b41d8f52c94c1a99c0e165437d7b223b655df582ceda90b9bfcd60e7
+  languageName: node
+  linkType: hard
+
 "editors@workspace:.":
   version: 0.0.0-use.local
   resolution: "editors@workspace:."
@@ -968,6 +993,9 @@ __metadata:
     "@types/react": ^18.2.7
     "@types/react-dom": ^18.2.4
     "@vitejs/plugin-react": ^4.0.0
+    cuid: ^3.0.0
+    dexie: ^3.2.3
+    dexie-react-hooks: ^1.1.3
     monaco-editor: ^0.38.0
     react: ^18.2.0
     react-dom: ^18.2.0

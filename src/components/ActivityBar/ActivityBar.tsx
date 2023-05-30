@@ -1,11 +1,14 @@
-import { join } from '@/utils'
-import style from './styles.module.scss'
+import SettingsIcon from '@/assets/icons/Settings'
 import { useActivityBarStore } from '@/store'
+import FilesIcon from '@/assets/icons/Files'
+import style from './styles.module.scss'
+import { join } from '@/utils'
+import React from 'react'
 
 interface ActivityBarItemProps {
 	action(): void
 	title: string
-	icon: string
+	icon: React.ReactElement
 	id: string
 }
 
@@ -16,7 +19,7 @@ const ActivityBar = () => {
 		{
 			id: 'explorer',
 			title: 'Explorer',
-			icon: 'https://img.icons8.com/material-outlined/24/ffffff/file.png',
+			icon: <FilesIcon color="white" />,
 			action() {
 				setActiveTab(activeTab === 'explorer' ? null : 'explorer')
 			},
@@ -24,7 +27,7 @@ const ActivityBar = () => {
 		{
 			id: 'utils',
 			title: 'Utilities',
-			icon: 'https://img.icons8.com/material-outlined/24/ffffff/settings.png',
+			icon: <SettingsIcon color="white" />,
 			action() {
 				setActiveTab(activeTab === 'utils' ? null : 'utils')
 			},
@@ -34,7 +37,7 @@ const ActivityBar = () => {
 	const ActivityBarItem = ({ id, title, icon, action }: ActivityBarItemProps) => {
 		return (
 			<div className={join('pointer', style.activityBarItem, id === activeTab && style.activityBarItemActive)} title={title} onClick={action}>
-				<img src={icon} />
+				{icon}
 			</div>
 		)
 	}

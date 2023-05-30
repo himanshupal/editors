@@ -1,0 +1,35 @@
+@import '@/styles/variables.scss';
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	border-right: 1px solid blueviolet;
+	min-width: 250px;
+	background-color: lighten($tabs, 5);
+
+	&Actions {
+		height: calc(32px - (0.5rem + 0.25rem));
+		padding: 0.5rem;
+		padding-bottom: 0.25rem;
+		background-color: lighten(#000000, 10%);
+
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	&Contents {
+		overflow-y: auto;
+		flex: 1;
+
+		padding: 0 0.25rem;
+	}
+}
+
+.file {
+	padding: 0.15rem;
+	transition: background-color 75ms ease-in-out;
+
+	&:hover {
+		background-color: darken($tabs, 5);
+	}
+}

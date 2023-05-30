@@ -1,4 +1,7 @@
+@import '@/styles/variables.scss';
+
 .activityBar {
+	background-color: lighten($tabs, 2.5);
 	min-height: calc(100% - 1rem);
 	flex-direction: column;
 	align-items: center;

@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react'
 import ActivityBar from '@/components/ActivityBar'
 import CloseIcon from '@/assets/icons/Close'
 import codeSample from '@/utils/codeSample'
+import Sidebar from '@/components/Sidebar'
 import { join } from '@/utils'
 
 interface Tab {
@@ -106,6 +107,7 @@ const Home = () => {
 	return (
 		<div className="fullpage row">
 			<ActivityBar />
+			<Sidebar />
 
 			<div className="fullpage" onDoubleClick={() => (tabs.length ? null : setLangModalOpen(true))}>
 				{tabs.length ? (
