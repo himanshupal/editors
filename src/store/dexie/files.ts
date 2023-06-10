@@ -1,10 +1,10 @@
 import { FILES__DATABASE_KEY, FILES__DATABASE_VERSION } from '@/constants';
-import type { File } from '@/types/Database';
+import type { FileOrFolder } from '@/types/Database';
 import type { Table } from 'dexie';
 import Dexie from 'dexie';
 
 class FilesDB extends Dexie {
-	files!: Table<File, string>;
+	files!: Table<FileOrFolder, string>;
 
 	constructor() {
 		super(FILES__DATABASE_KEY);

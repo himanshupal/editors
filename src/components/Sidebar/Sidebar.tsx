@@ -1,65 +1,98 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import NewFolder from '@/assets/icons/NewFolder'
+import DeleteIcon from '@/assets/icons/Delete'
 import { useActivityBarStore } from '@/store'
 import NewFile from '@/assets/icons/NewFile'
+import { Fragment, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { filesDB } from '@/store/dexie'
-import { useState } from 'react'
+import Modal from '@/components/Modal'
 import { join } from '@/utils'
 import cuid from 'cuid'
 
 import style from './styles.module.scss'
 
+type FormOrInputFocusEventHandler = React.FormEventHandler<HTMLFormElement> & React.FocusEventHandler<HTMLInputElement>
+
 const Sidebar = () => {
 	const { activeTab } = useActivityBarStore()
-	const [fileName, setFileName] = useState<string>('')
-	const [newFile, setNewFile] = useState<[file: boolean, folder: boolean]>([false, false])
-
+	const newFileRef = useRef<HTMLInputElement | null>(null)
 	const elements = useLiveQuery(() => filesDB.files.toArray(), [])
 
+	// true represents a file, false represents a folder
+	const [newFile, setNewFile] = useState<boolean>()
+	const [confirmDeletionFor, setConfirmDeletionFor] = useState<string>()
+
 	const createFile =
-		(isFile: boolean): React.FormEventHandler<HTMLFormElement> & React.FocusEventHandler<HTMLInputElement> =>
+		(isFile: boolean): FormOrInputFocusEventHandler =>
 		(e) => {
 			e.preventDefault()
-			filesDB.files.add({ id: cuid(), name: fileName, isFile, type: 'sol' })
-			setNewFile([false, false])
-			setFileName('')
+			if (!newFileRef.current) return
+			filesDB.files.add({ id: cuid(), name: newFileRef.current.value, isFile })
+			setNewFile(undefined)
 		}
+
+	const showInput = (isFile: boolean) => () => {
+		setNewFile(isFile)
+		setTimeout(() => newFileRef.current?.focus(), 0)
+	}
+
+	const deleteFileOrFolder = (id: string) => () => {
+		setConfirmDeletionFor(id)
+	}
 
 	return !activeTab ? null : (
 		<div className={style.sidebar}>
 			<div className={join('row', style.sidebarActions)}>
-				<span title="New File" className="pointer centered" onClick={() => setNewFile([true, false])}>
+				<span title="New File" className="pointer centered" onClick={showInput(true)}>
 					<NewFile height={16} width={16} />
 				</span>
-				<span title="New Folder" className="pointer centered" onClick={() => setNewFile([false, true])}>
+				<span title="New Folder" className="pointer centered" onClick={showInput(false)}>
 					<NewFolder height={16} width={16} />
 				</span>
 			</div>
 			<div className={style.sidebarContents}>
-				{elements?.map((x) => (
-					<div className={join('pointer', style.file)} key={x.id}>
-						{x.name}
+				{elements?.map(({ id, name, isFile }) => (
+					<div className={join('pointer', style.file)} key={id}>
+						{isFile ? '+' : '>'} {name}
+						<span className={style.fileDelete}>
+							<DeleteIcon width={16} height={16} onClick={deleteFileOrFolder(id)} />
+						</span>
 					</div>
 				))}
-				{!!newFile.filter(Boolean).length && (
-					<form onSubmit={createFile(newFile[0])}>
+				{newFile !== undefined && (
+					<form onSubmit={createFile(newFile)}>
 						<input
 							type="search"
 							inputMode="text"
-							value={fileName}
+							ref={newFileRef}
 							onBlur={(e) => {
-								if (e.target.value) return createFile(newFile[0])(e)
-								setNewFile([false, false])
-								setFileName('')
+								if (!e.target.value) setNewFile(undefined)
+								else return createFile(newFile)(e)
 							}}
 							onChange={({ target }) => {
-								setFileName(target.value)
-								!target.value && setNewFile([false, false])
+								!target.value && setNewFile(undefined)
 							}}
 						/>
 					</form>
 				)}
 			</div>
+			{createPortal(
+				<Modal title="Are you sure?" open={!!confirmDeletionFor} onClose={() => setConfirmDeletionFor(undefined)}>
+					<Fragment>
+						<button
+							onClick={() => {
+								filesDB.files.delete(confirmDeletionFor!)
+								setConfirmDeletionFor(undefined)
+							}}
+						>
+							Delete
+						</button>
+						<button onClick={() => setConfirmDeletionFor(undefined)}>Cancel</button>
+					</Fragment>
+				</Modal>,
+				document.getElementById('root')!
+			)}
 		</div>
 	)
 }

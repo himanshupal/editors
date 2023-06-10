@@ -21,7 +21,7 @@ const ActivityBar = () => {
 			title: 'Explorer',
 			icon: <FilesIcon color="white" />,
 			action() {
-				setActiveTab(activeTab === 'explorer' ? null : 'explorer')
+				setActiveTab(activeTab === 'explorer' ? undefined : 'explorer')
 			},
 		},
 		{
@@ -29,7 +29,7 @@ const ActivityBar = () => {
 			title: 'Utilities',
 			icon: <SettingsIcon color="white" />,
 			action() {
-				setActiveTab(activeTab === 'utils' ? null : 'utils')
+				setActiveTab(activeTab === 'utils' ? undefined : 'utils')
 			},
 		},
 	]

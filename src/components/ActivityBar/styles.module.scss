@@ -14,12 +14,13 @@
 
 		display: grid;
 		place-content: center;
-		border-left: 2px solid transparent;
+		border-left: 1px solid transparent;
 
 		transition: background-color 100ms ease-in-out;
 
 		&Active {
 			background-color: lighten(#171c28, 25%);
+			border-left: 1px solid #6600ff;
 		}
 
 		&:not(&Active) {
