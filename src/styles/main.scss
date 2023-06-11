@@ -88,3 +88,20 @@ body {
 	display: flex;
 	flex-direction: row;
 }
+
+.split {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+
+.gutter {
+	background-color: blueviolet;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	margin: 0 2px;
+
+	&-horizontal {
+		cursor: col-resize;
+	}
+}

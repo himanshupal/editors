@@ -46,7 +46,9 @@ const Sidebar = () => {
 		setConfirmDeletionFor(id)
 	}
 
-	return !activeTab ? null : (
+	if (!activeTab) return <div /> // To prevent split from collapsing
+
+	return (
 		<div className={style.sidebar}>
 			<div className={join('row', style.sidebarActions)}>
 				<span title="New File" className="pointer centered" onClick={showInput(true)}>

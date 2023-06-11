@@ -3,8 +3,6 @@
 .sidebar {
 	display: flex;
 	flex-direction: column;
-	border-right: 1px solid blueviolet;
-	min-width: 250px;
 	background-color: lighten($tabs, 5);
 
 	&Actions {
