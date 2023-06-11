@@ -17,11 +17,17 @@ export default defineConfig({
 			}),
 	],
 	build: {
+		chunkSizeWarningLimit: 3584,
 		rollupOptions: {
 			plugins: [
 				// ↓ Needed for build
 				nodePolyfills(),
 			],
+			output: {
+				manualChunks: {
+					editor: ['monaco-editor'],
+				},
+			},
 		},
 		// ↓ Needed for build if using WalletConnect and other providers
 		commonjsOptions: {

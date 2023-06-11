@@ -1,15 +1,11 @@
+import type { supportedLanguages } from '@/constants'
 import Modal, { IModalProps } from './Modal'
 import style from './styles.module.scss'
 import { join } from '@/utils'
 
-interface ILanguage {
-	key?: string
-	title: string
-}
-
 interface ILanguageSelectionProps extends Omit<IModalProps, 'children' | 'onClose'> {
 	onClose: (selection?: string | null) => void
-	languages: Array<ILanguage>
+	languages: typeof supportedLanguages
 }
 
 const LanguageSelection = (props: ILanguageSelectionProps) => {
