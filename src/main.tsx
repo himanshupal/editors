@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import EditorStateProvider from '@/context/EditorContext'
 import { createRoot } from 'react-dom/client'
 import { StrictMode } from 'react'
 
@@ -13,10 +14,12 @@ const rootEl = document.getElementById('root')!
 
 createRoot(rootEl).render(
 	<StrictMode>
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<Home />} />
-			</Routes>
-		</BrowserRouter>
+		<EditorStateProvider>
+			<BrowserRouter>
+				<Routes>
+					<Route index element={<Home />} />
+				</Routes>
+			</BrowserRouter>
+		</EditorStateProvider>
 	</StrictMode>
 )
