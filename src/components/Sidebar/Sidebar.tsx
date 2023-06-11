@@ -18,6 +18,7 @@ type FormOrInputFocusEventHandler = React.FormEventHandler<HTMLFormElement> & Re
 const Sidebar = () => {
 	const { createModel } = useEditorContext()
 	const { activeTab } = useActivityBarStore()
+	const formRef = useRef<HTMLFormElement | null>(null)
 	const newFileRef = useRef<HTMLInputElement | null>(null)
 	const elements = useLiveQuery(() => storage.files.toArray(), [])
 
@@ -72,14 +73,14 @@ const Sidebar = () => {
 					</div>
 				))}
 				{newFile !== undefined && (
-					<form onSubmit={createFile(newFile)}>
+					<form ref={formRef} onSubmit={createFile(newFile)}>
 						<input
 							type="search"
 							inputMode="text"
 							ref={newFileRef}
 							onBlur={(e) => {
 								if (!e.target.value) setNewFile(undefined)
-								else return createFile(newFile)(e)
+								else formRef.current?.requestSubmit() /* return createFile(newFile)(e) */
 							}}
 							onChange={({ target }) => {
 								!target.value && setNewFile(undefined)
