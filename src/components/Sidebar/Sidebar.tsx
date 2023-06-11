@@ -1,13 +1,14 @@
+import { useEditorContext } from '@/context/EditorContext'
+import { getLanguageForFileName, join } from '@/utils'
+import { Fragment, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import NewFolder from '@/assets/icons/NewFolder'
 import DeleteIcon from '@/assets/icons/Delete'
 import { useActivityBarStore } from '@/store'
 import NewFile from '@/assets/icons/NewFile'
-import { Fragment, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { filesDB } from '@/store/dexie'
 import Modal from '@/components/Modal'
-import { join } from '@/utils'
+import storage from '@/store/dexie'
 import cuid from 'cuid'
 
 import style from './styles.module.scss'
@@ -15,9 +16,10 @@ import style from './styles.module.scss'
 type FormOrInputFocusEventHandler = React.FormEventHandler<HTMLFormElement> & React.FocusEventHandler<HTMLInputElement>
 
 const Sidebar = () => {
+	const { createModel } = useEditorContext()
 	const { activeTab } = useActivityBarStore()
 	const newFileRef = useRef<HTMLInputElement | null>(null)
-	const elements = useLiveQuery(() => filesDB.files.toArray(), [])
+	const elements = useLiveQuery(() => storage.files.toArray(), [])
 
 	// true represents a file, false represents a folder
 	const [newFile, setNewFile] = useState<boolean>()
@@ -28,7 +30,10 @@ const Sidebar = () => {
 		(e) => {
 			e.preventDefault()
 			if (!newFileRef.current) return
-			filesDB.files.add({ id: cuid(), name: newFileRef.current.value, isFile })
+			const language = getLanguageForFileName(newFileRef.current.value)
+			const newFileId = cuid()
+			storage.files.add({ id: newFileId, name: newFileRef.current.value, isFile, type: language })
+			if (isFile) createModel(language, newFileRef.current.value, newFileId)
 			setNewFile(undefined)
 		}
 
@@ -53,7 +58,11 @@ const Sidebar = () => {
 			</div>
 			<div className={style.sidebarContents}>
 				{elements?.map(({ id, name, isFile }) => (
-					<div className={join('pointer', style.file)} key={id}>
+					<div
+						key={id}
+						className={join('pointer', style.file)}
+						onClick={() => (!isFile ? null : createModel(getLanguageForFileName(name), name, id))}
+					>
 						{isFile ? '+' : '>'} {name}
 						<span className={style.fileDelete}>
 							<DeleteIcon width={16} height={16} onClick={deleteFileOrFolder(id)} />
@@ -82,8 +91,8 @@ const Sidebar = () => {
 					<Fragment>
 						<button
 							onClick={() => {
-								filesDB.files.delete(confirmDeletionFor!)
 								setConfirmDeletionFor(undefined)
+								storage.files.delete(confirmDeletionFor!)
 							}}
 						>
 							Delete

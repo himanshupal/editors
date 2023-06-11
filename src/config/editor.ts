@@ -5,7 +5,9 @@ import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 window.editor = editor;
 
 export const defaultEditorConfig: editor.IStandaloneEditorConstructionOptions = {
-	model: editor.createModel(codeSample.logs, 'logs'),
+	// model: editor.createModel(codeSample.logs, 'logs'),
+	model: null,
+	tabFocusMode: true,
 	fontFamily: 'Cascadia Code, Jetbrains Mono',
 	fontSize: 12,
 	mouseWheelZoom: true,

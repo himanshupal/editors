@@ -1,2 +1,2 @@
-export const FILES__DATABASE_KEY = 'files';
-export const FILES__DATABASE_VERSION = 1;
+export const INDEXED__DATABASE_KEY = 'editorStorage';
+export const INDEXED__DATABASE_VERSION = 1;
