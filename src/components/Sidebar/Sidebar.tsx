@@ -47,63 +47,65 @@ const Sidebar = () => {
 		setConfirmDeletionFor(id)
 	}
 
-	if (!activeTab) return <div /> // To prevent split from collapsing
-
 	return (
-		<div className={style.sidebar}>
-			<div className={join('row', style.sidebarActions)}>
-				<span title="New File" className="pointer centered" onClick={showInput(true)}>
-					<NewFile height={16} width={16} />
-				</span>
-				<span title="New Folder" className="pointer centered" onClick={showInput(false)}>
-					<NewFolder height={16} width={16} />
-				</span>
-			</div>
-			<div className={style.sidebarContents}>
-				{elements?.map(({ id, name, isFile }) => (
-					<div
-						key={id}
-						className={join('pointer', style.file)}
-						onClick={() => (!isFile ? null : createModel(getLanguageForFileName(name), name, id))}
-					>
-						{isFile ? '+' : '>'} {name}
-						<span className={style.fileDelete}>
-							<DeleteIcon width={16} height={16} onClick={deleteFileOrFolder(id)} />
+		<div className={style.sidebarWrapper}>
+			{!activeTab ? null : (
+				<div className={style.sidebar}>
+					<div className={join('row', style.sidebarActions)}>
+						<span title="New File" className="pointer centered" onClick={showInput(true)}>
+							<NewFile height={16} width={16} />
+						</span>
+						<span title="New Folder" className="pointer centered" onClick={showInput(false)}>
+							<NewFolder height={16} width={16} />
 						</span>
 					</div>
-				))}
-				{newFile !== undefined && (
-					<form ref={formRef} onSubmit={createFile(newFile)}>
-						<input
-							type="search"
-							inputMode="text"
-							ref={newFileRef}
-							onBlur={(e) => {
-								if (!e.target.value) setNewFile(undefined)
-								else formRef.current?.requestSubmit() /* return createFile(newFile)(e) */
-							}}
-							onChange={({ target }) => {
-								!target.value && setNewFile(undefined)
-							}}
-						/>
-					</form>
-				)}
-			</div>
-			{createPortal(
-				<Modal title="Are you sure?" open={!!confirmDeletionFor} onClose={() => setConfirmDeletionFor(undefined)}>
-					<Fragment>
-						<button
-							onClick={() => {
-								setConfirmDeletionFor(undefined)
-								storage.files.delete(confirmDeletionFor!)
-							}}
-						>
-							Delete
-						</button>
-						<button onClick={() => setConfirmDeletionFor(undefined)}>Cancel</button>
-					</Fragment>
-				</Modal>,
-				document.getElementById('root')!
+					<div className={style.sidebarContents}>
+						{elements?.map(({ id, name, isFile }) => (
+							<div
+								key={id}
+								className={join('pointer', style.file)}
+								onClick={() => (!isFile ? null : createModel(getLanguageForFileName(name), name, id))}
+							>
+								{isFile ? '+' : '>'} {name}
+								<span className={style.fileDelete}>
+									<DeleteIcon width={16} height={16} onClick={deleteFileOrFolder(id)} />
+								</span>
+							</div>
+						))}
+						{newFile !== undefined && (
+							<form ref={formRef} onSubmit={createFile(newFile)}>
+								<input
+									type="search"
+									inputMode="text"
+									ref={newFileRef}
+									onBlur={(e) => {
+										if (!e.target.value) setNewFile(undefined)
+										else formRef.current?.requestSubmit() /* return createFile(newFile)(e) */
+									}}
+									onChange={({ target }) => {
+										!target.value && setNewFile(undefined)
+									}}
+								/>
+							</form>
+						)}
+					</div>
+					{createPortal(
+						<Modal title="Are you sure?" open={!!confirmDeletionFor} onClose={() => setConfirmDeletionFor(undefined)}>
+							<Fragment>
+								<button
+									onClick={() => {
+										setConfirmDeletionFor(undefined)
+										storage.files.delete(confirmDeletionFor!)
+									}}
+								>
+									Delete
+								</button>
+								<button onClick={() => setConfirmDeletionFor(undefined)}>Cancel</button>
+							</Fragment>
+						</Modal>,
+						document.getElementById('root')!
+					)}
+				</div>
 			)}
 		</div>
 	)

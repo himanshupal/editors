@@ -96,10 +96,14 @@ body {
 }
 
 .gutter {
-	background-color: blueviolet;
-	background-repeat: no-repeat;
+	background-color: $tabs;
 	background-position: 50%;
-	margin: 0 2px;
+	background-repeat: no-repeat;
+	transition: background-color 150ms ease-in-out;
+
+	&:hover {
+		background-color: lighten($tabs, 35%);
+	}
 
 	&-horizontal {
 		cursor: col-resize;

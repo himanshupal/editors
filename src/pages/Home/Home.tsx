@@ -23,14 +23,19 @@ const Home = () => {
 			<ActivityBar />
 
 			<Split
-				gutterSize={1}
+				gutterSize={3}
 				sizes={[15, 85]}
 				className="split"
-				gutterAlign="end"
 				snapOffset={[100, 0]}
-				minSize={[0, window.innerWidth - 500]}
+				minSize={[0, window.innerWidth / 2]}
 				collapsed={+!activeTab ? 0 : undefined}
-				onDrag={([sidebarWidth]) => (sidebarWidth < 15 / 2 ? activeTab && setActiveTab(undefined) : !activeTab && setActiveTab('explorer'))}
+				onDragEnd={([sidebarWidth]) => {
+					if (sidebarWidth < 10 && activeTab) {
+						setActiveTab(undefined)
+					} else if (sidebarWidth > 5 && !activeTab) {
+						setActiveTab('explorer')
+					}
+				}}
 			>
 				<Sidebar />
 				<div className="fullpage" onDoubleClick={() => (tabs.length ? null : setLangModalOpen(true))}>

@@ -1,7 +1,9 @@
 @import '@/styles/variables.scss';
 
 .sidebar {
+	height: 100%;
 	display: flex;
+	min-width: 250px;
 	flex-direction: column;
 	background-color: lighten($tabs, 5);
 
@@ -20,6 +22,10 @@
 		flex: 1;
 
 		padding: 0 0.25rem;
+	}
+
+	&Wrapper {
+		overflow: hidden;
 	}
 }
 
