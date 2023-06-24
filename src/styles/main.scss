@@ -90,9 +90,9 @@ body {
 }
 
 .split {
-	width: 100%;
-	display: flex;
+	width: calc(100% - 46.5px); // Adjustment for Width of activityBar
 	flex-direction: row;
+	display: flex;
 }
 
 .gutter {

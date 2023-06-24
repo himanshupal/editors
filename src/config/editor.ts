@@ -14,7 +14,7 @@ export const defaultEditorConfig: editor.IStandaloneEditorConstructionOptions = 
 	smoothScrolling: true,
 	automaticLayout: true,
 	fontLigatures: true,
-	theme: logsId,
+	theme: 'vs-dark',
 	// theme: 'aura-dark',
 	fastScrollSensitivity: 7,
 	occurrencesHighlight: false,

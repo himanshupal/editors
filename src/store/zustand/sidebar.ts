@@ -1,12 +1,7 @@
-import type { FileOrFolder } from '@/types/Database';
+import type { ISidebarStore } from '@/types/Zustand';
 import { create } from 'zustand';
 
-interface SidebarStore {
-	selectedItem?: FileOrFolder;
-	setSelectedItem(id?: FileOrFolder): void;
-}
-
-const useSidebarStore = create<SidebarStore>((set) => ({
+const useSidebarStore = create<ISidebarStore>((set) => ({
 	setSelectedItem: (selectedItem) => set({ selectedItem }),
 }));
 

@@ -15,24 +15,28 @@ interface ActivityBarItemProps {
 const ActivityBar = () => {
 	const { activeTab, setActiveTab } = useActivityBarStore()
 
-	const activityBarItems: ActivityBarItemProps[] = [
-		{
-			id: 'explorer',
-			title: 'Explorer',
-			icon: <FilesIcon fill="white" />,
-			action() {
-				setActiveTab(activeTab === 'explorer' ? undefined : 'explorer')
+	const activityBarItems: Record<'top' | 'bottom', ActivityBarItemProps[]> = {
+		top: [
+			{
+				id: 'explorer',
+				title: 'Explorer',
+				icon: <FilesIcon fill="white" />,
+				action() {
+					setActiveTab(activeTab === 'explorer' ? undefined : 'explorer')
+				},
 			},
-		},
-		{
-			id: 'utils',
-			title: 'Utilities',
-			icon: <SettingsIcon color="white" />,
-			action() {
-				setActiveTab(activeTab === 'utils' ? undefined : 'utils')
+		],
+		bottom: [
+			{
+				id: 'utils',
+				title: 'Utilities',
+				icon: <SettingsIcon color="white" />,
+				action() {
+					setActiveTab(activeTab === 'utils' ? undefined : 'utils')
+				},
 			},
-		},
-	]
+		],
+	}
 
 	const ActivityBarItem = ({ id, title, icon, action }: ActivityBarItemProps) => {
 		return (
@@ -44,9 +48,16 @@ const ActivityBar = () => {
 
 	return (
 		<div className={style.activityBar}>
-			{activityBarItems.map((item) => (
-				<ActivityBarItem key={item.id} {...item} />
-			))}
+			<div className={style.activityBarItems}>
+				{activityBarItems.top.map((item) => (
+					<ActivityBarItem key={item.id} {...item} />
+				))}
+			</div>
+			<div className={style.activityBarItems}>
+				{activityBarItems.bottom.map((item) => (
+					<ActivityBarItem key={item.id} {...item} />
+				))}
+			</div>
 		</div>
 	)
 }

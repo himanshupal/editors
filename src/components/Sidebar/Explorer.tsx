@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useRef, useState } from 'react'
+import React, { Fragment, memo, useCallback, useRef, useState } from 'react'
 import type { FileOrFolder, Folder } from '@/types/Database'
 import { useEditorContext } from '@/context/EditorContext'
 import { useEditorStore, useSidebarStore } from '@/store'
@@ -27,7 +27,7 @@ interface ITreeProps {
 	level?: number
 }
 
-const Tree = ({ content, level = 0, deleteFileOrFolder }: ITreeProps) => {
+const Tree = memo(({ content, level = 0, deleteFileOrFolder }: ITreeProps) => {
 	const { selectedItem, setSelectedItem } = useSidebarStore()
 	const { createModel } = useEditorContext()
 
@@ -37,8 +37,7 @@ const Tree = ({ content, level = 0, deleteFileOrFolder }: ITreeProps) => {
 
 	const File = memo(({ content: f }: Pick<ITreeProps, 'content'>) => (
 		<div
-			key={f.id}
-			style={{ paddingLeft: level * 12 }}
+			style={level ? { paddingLeft: level * 12 } : undefined}
 			className={join('pointer', style.file, selectedItem?.id === f.id && style.fileSelected)}
 			onClick={(e) => (
 				e.stopPropagation(),
@@ -70,7 +69,7 @@ const Tree = ({ content, level = 0, deleteFileOrFolder }: ITreeProps) => {
 	))
 
 	return isFile(content) ? <File content={content} /> : <Folder content={content} />
-}
+})
 
 const SidebarExplorer = () => {
 	const { queue } = useEditorStore()
@@ -95,37 +94,44 @@ const SidebarExplorer = () => {
 			found.children = [...(found.children || []), f]
 		}
 		return data.filter((d) => !d.parentId)
-	}, [])
+	})
 
-	const createFile =
+	const createFile = useCallback(
 		(isFile: boolean): FormOrInputFocusEventHandler =>
-		(e) => {
-			e.preventDefault()
-			if (!newFileRef.current) return
-			const language = getLanguageForFileName(newFileRef.current.value)
-			const newFileId = cuid()
-			storage.files.add({
-				id: newFileId,
-				name: newFileRef.current.value,
-				isFile,
-				type: language,
-				parentId: selectedItem?.isFile ? undefined : selectedItem?.id, // Allowing only folders to be parent
-			})
-			if (isFile) createModel(language, newFileRef.current.value, newFileId)
-			setNewFile(undefined)
-		}
+			(e) => {
+				e.preventDefault()
+				if (!newFileRef.current) return
+				const language = getLanguageForFileName(newFileRef.current.value)
+				const newFileId = cuid()
+				storage.files.add({
+					id: newFileId,
+					name: newFileRef.current.value,
+					isFile,
+					type: language,
+					parentId: selectedItem?.isFile ? undefined : selectedItem?.id, // Allowing only folders to be parent
+				})
+				if (isFile) createModel(language, newFileRef.current.value, newFileId)
+				setNewFile(undefined)
+			},
+		[storage, selectedItem]
+	)
 
-	const showInput = (isFile: boolean) => () => {
-		setNewFile(isFile)
-		setTimeout(() => newFileRef.current?.focus(), 0)
-	}
+	const showInput = useCallback(
+		(isFile: boolean) => () => {
+			setNewFile(isFile)
+			setTimeout(() => newFileRef.current?.focus(), 0)
+		},
+		[]
+	)
 
-	const deleteFileOrFolder =
+	const deleteFileOrFolder = useCallback(
 		(id: string): React.MouseEventHandler<SVGSVGElement> =>
-		(e) => {
-			e.stopPropagation()
-			setConfirmDeletionFor(id)
-		}
+			(e) => {
+				e.stopPropagation()
+				setConfirmDeletionFor(id)
+			},
+		[]
+	)
 
 	return (
 		<Fragment>

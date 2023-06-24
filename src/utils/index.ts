@@ -1,4 +1,5 @@
 import type { SupportedLanguagesKey } from '@/constants';
+import type { FileOrFolder } from '@/types/Database';
 import { supportedLanguages } from '@/constants';
 
 export const join = (...classes: Array<string | boolean | undefined>) => classes.filter(Boolean).join(' ');
@@ -16,4 +17,11 @@ export const getLanguageForFileName = (fileName: string): SupportedLanguagesKey 
 
 		return localExtensions?.includes(fileName);
 	})?.key;
+};
+
+export const getParentsIdsForFile = (f: FileOrFolder, allFolders: FileOrFolder[]): string[] => {
+	if (!f.parentId) return [];
+	const parentFolder = allFolders.find(({ id }) => id === f.parentId);
+	const parentIds = !parentFolder ? [] : getParentsIdsForFile(parentFolder, allFolders);
+	return [f.parentId, ...parentIds];
 };
