@@ -1,8 +1,8 @@
 import React, { Fragment, memo, useCallback, useRef, useState } from 'react'
+import { getChildrenIds, getLanguageForFileName, join } from '@/utils'
 import type { FileOrFolder, Folder } from '@/types/Database'
 import { useEditorContext } from '@/context/EditorContext'
 import { useEditorStore, useSidebarStore } from '@/store'
-import { getLanguageForFileName, join } from '@/utils'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { isFile } from '@/utils/detectType'
 import { createPortal } from 'react-dom'
@@ -12,6 +12,7 @@ import cuid from 'cuid'
 
 import { ReactComponent as ChevronRight } from '@/assets/icons/chevron-right.svg'
 import { ReactComponent as ChevronDown } from '@/assets/icons/chevron-down.svg'
+import { ReactComponent as CollapseAll } from '@/assets/icons/collapse-all.svg'
 import { ReactComponent as NewFolder } from '@/assets/icons/new-folder.svg'
 import { ReactComponent as DeleteIcon } from '@/assets/icons/delete.svg'
 import { ReactComponent as NewFile } from '@/assets/icons/new-file.svg'
@@ -29,11 +30,7 @@ interface ITreeProps {
 
 const Tree = memo(({ content, level = 0, deleteFileOrFolder }: ITreeProps) => {
 	const { selectedItem, setSelectedItem } = useSidebarStore()
-	const { createModel } = useEditorContext()
-
-	const toggleExpandStatus = (id: string, status: boolean) => {
-		storage.files.update(id, { isExpanded: status })
-	}
+	const { createModel, expandFolders } = useEditorContext()
 
 	const File = memo(({ content: f }: Pick<ITreeProps, 'content'>) => (
 		<div
@@ -42,7 +39,7 @@ const Tree = memo(({ content, level = 0, deleteFileOrFolder }: ITreeProps) => {
 			onClick={(e) => (
 				e.stopPropagation(),
 				setSelectedItem(f),
-				isFile(f) ? createModel(getLanguageForFileName(f.name), f.name, f.id) : toggleExpandStatus(f.id, !f.isExpanded)
+				isFile(f) ? createModel(getLanguageForFileName(f.name), f.name, f.id) : expandFolders([f.id], !f.isExpanded)
 			)}
 		>
 			<span className="row" style={{ gap: isFile(f) ? 4 : 2, alignItems: 'center' }}>
@@ -73,7 +70,7 @@ const Tree = memo(({ content, level = 0, deleteFileOrFolder }: ITreeProps) => {
 
 const SidebarExplorer = () => {
 	const { queue } = useEditorStore()
-	const { createModel, closeModel } = useEditorContext()
+	const { createModel, closeModel, expandFolders } = useEditorContext()
 	const { selectedItem, setSelectedItem } = useSidebarStore()
 
 	const newFileRef = useRef<HTMLInputElement | null>(null)
@@ -83,18 +80,22 @@ const SidebarExplorer = () => {
 	const [newFile, setNewFile] = useState<boolean>()
 	const [confirmDeletionFor, setConfirmDeletionFor] = useState<string>()
 
-	const elements = useLiveQuery(async () => {
-		const data = await storage.files.toArray()
-		// Creating a map below to avoid the find operation each time
-		const map = new Map(data.map((f) => [f.id, f]))
-		for (const f of data) {
-			if (!f.parentId) continue
-			const found = map.get(f.parentId)
-			if (!found || isFile(found)) continue
-			found.children = [...(found.children || []), f]
-		}
-		return data.filter((d) => !d.parentId)
-	})
+	const [filesMap, rawFilesList, filesList] = useLiveQuery(
+		async () => {
+			const data = await storage.files.toArray()
+			// Creating a map below to avoid the find operation each time
+			const map = new Map(data.map((f) => [f.id, f]))
+			for (const f of data) {
+				if (!f.parentId) continue
+				const found = map.get(f.parentId)
+				if (!found || isFile(found)) continue
+				found.children = [...(found.children || []), f]
+			}
+			return [map, data, data.filter((d) => !d.parentId)]
+		},
+		[],
+		[new Map(), [], []] as [Map<string, FileOrFolder>, FileOrFolder[], FileOrFolder[]]
+	)
 
 	const createFile = useCallback(
 		(isFile: boolean): FormOrInputFocusEventHandler =>
@@ -104,11 +105,11 @@ const SidebarExplorer = () => {
 				const language = getLanguageForFileName(newFileRef.current.value)
 				const newFileId = cuid()
 				storage.files.add({
+					isFile,
 					id: newFileId,
 					name: newFileRef.current.value,
-					isFile,
-					type: language,
-					parentId: selectedItem?.isFile ? undefined : selectedItem?.id, // Allowing only folders to be parent
+					parentId: selectedItem?.isFile ? selectedItem.parentId : selectedItem?.id, // Allowing only folders to be parent
+					...(isFile ? { type: language } : { isExpanded: true }),
 				})
 				if (isFile) createModel(language, newFileRef.current.value, newFileId)
 				setNewFile(undefined)
@@ -133,6 +134,26 @@ const SidebarExplorer = () => {
 		[]
 	)
 
+	const collapseAll = useCallback(() => {
+		const expandedFolders = rawFilesList.filter((f) => !isFile(f) && f.isExpanded) as Folder[]
+		expandFolders(
+			expandedFolders.map(({ id }) => id),
+			false
+		)
+	}, [rawFilesList])
+
+	const deleteFileOrFolderWithChildren = useCallback(() => {
+		if (!confirmDeletionFor) return
+		const fileWithChildrens = filesMap.get(confirmDeletionFor)
+		if (!fileWithChildrens) return
+		const idsToDelete = getChildrenIds(fileWithChildrens)
+
+		const modelsToClose = queue.filter((q) => q.fileId && idsToDelete.includes(q.fileId))
+		idsToDelete.forEach((id) => storage.files.delete(id))
+		modelsToClose.forEach(closeModel)
+		setConfirmDeletionFor(undefined)
+	}, [storage, confirmDeletionFor, queue, filesMap])
+
 	return (
 		<Fragment>
 			<div className={join('row', style.sidebarActions)}>
@@ -142,11 +163,14 @@ const SidebarExplorer = () => {
 				<span title="New Folder" className="pointer centered" onClick={showInput(false)}>
 					<NewFolder height={16} width={16} />
 				</span>
+				<span title="Collapse Folders in Explorer" className="pointer centered" onClick={collapseAll}>
+					<CollapseAll height={16} width={16} />
+				</span>
 			</div>
 			<div className={style.sidebarContents} onClick={() => selectedItem && setSelectedItem(undefined)}>
 				{/* Wrapping to make the clickAway work by making the aread covered by files list smaller */}
 				<div>
-					{elements?.map((el) => (
+					{filesList.map((el) => (
 						<Tree key={el.id} content={el} deleteFileOrFolder={deleteFileOrFolder} />
 					))}
 				</div>
@@ -171,16 +195,7 @@ const SidebarExplorer = () => {
 			{createPortal(
 				<Modal title="Are you sure?" open={!!confirmDeletionFor} onClose={() => setConfirmDeletionFor(undefined)}>
 					<Fragment>
-						<button
-							onClick={() => {
-								storage.files.delete(confirmDeletionFor!)
-								const modelToClose = queue.find((q) => q.fileId === confirmDeletionFor)
-								modelToClose && closeModel(modelToClose)
-								setConfirmDeletionFor(undefined)
-							}}
-						>
-							Delete
-						</button>
+						<button onClick={deleteFileOrFolderWithChildren}>Delete</button>
 						<button onClick={() => setConfirmDeletionFor(undefined)}>Cancel</button>
 					</Fragment>
 				</Modal>,

@@ -5,17 +5,25 @@ import { errorMessage, type SupportedLanguagesKey } from '@/constants'
 import { useEditorStore, useSidebarStore } from '@/store'
 import { defaultEditorConfig } from '@/config/editor'
 import { getParentsIdsForFile } from '@/utils'
+import type { Folder } from '@/types/Database'
 import codeSample from '@/utils/codeSample'
 import { isFile } from '@/utils/detectType'
 import { shallow } from 'zustand/shallow'
 import storage from '@/store/dexie'
 import cuid from 'cuid'
 
+const expandFolders = function (ids: string[], status = true) {
+	for (const id of ids) {
+		storage.files.update(id, { isExpanded: status })
+	}
+}
+
 const initialState: IEditorContext = {
 	mountElementRef: { current: null },
 	setCurrentModel: () => null,
 	createModel: () => null,
 	closeModel: () => null,
+	expandFolders,
 }
 
 const Context = createContext<IEditorContext>(initialState)
@@ -54,12 +62,7 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 		const fileFromStorage = allFilesFromStorage.find(({ id }) => id === newModelInfo.fileId)
 		if (!fileFromStorage || !isFile(fileFromStorage)) return
 		setSelectedItem(fileFromStorage)
-		getParentsIdsForFile(
-			fileFromStorage,
-			allFilesFromStorage.filter(({ isFile }) => !isFile)
-		).forEach((id) => {
-			storage.files.update(id, { isExpanded: true })
-		})
+		expandFolders(getParentsIdsForFile(fileFromStorage, allFilesFromStorage.filter((f) => !isFile(f)) as Folder[]))
 	}
 
 	const createModel = (language?: SupportedLanguagesKey, name?: string, fileId?: string) => {
@@ -94,6 +97,7 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 			value={{
 				closeModel,
 				createModel,
+				expandFolders,
 				mountElementRef,
 				setCurrentModel({ model }) {
 					changeModelTo(model)

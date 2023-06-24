@@ -12,6 +12,7 @@ export interface IEditorContext {
 	mountElementRef: React.MutableRefObject<HTMLDivElement | null>;
 
 	createModel(language?: SupportedLanguagesKey, name?: string, fileId?: string): void;
+	expandFolders(ids: string[], status: boolean): void;
 	setCurrentModel(tab: ModelInfo): void;
 	closeModel(tab: ModelInfo): void;
 }
