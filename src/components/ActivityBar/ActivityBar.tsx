@@ -1,6 +1,6 @@
-import SettingsIcon from '@/assets/icons/Settings'
+import { ReactComponent as SettingsIcon } from '@/assets/icons/settings-gear.svg'
+import { ReactComponent as FilesIcon } from '@/assets/icons/files.svg'
 import { useActivityBarStore } from '@/store'
-import FilesIcon from '@/assets/icons/Files'
 import style from './styles.module.scss'
 import { join } from '@/utils'
 import React from 'react'
@@ -19,7 +19,7 @@ const ActivityBar = () => {
 		{
 			id: 'explorer',
 			title: 'Explorer',
-			icon: <FilesIcon color="white" />,
+			icon: <FilesIcon fill="white" />,
 			action() {
 				setActiveTab(activeTab === 'explorer' ? undefined : 'explorer')
 			},

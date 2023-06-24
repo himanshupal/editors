@@ -9,9 +9,8 @@
 
 	&Actions {
 		height: calc(32px - (0.5rem + 0.25rem));
-		padding: 0.5rem;
-		padding-bottom: 0.25rem;
 		background-color: lighten(#000000, 10%);
+		padding: 0.25rem 0.5rem;
 
 		display: flex;
 		gap: 0.5rem;
@@ -34,12 +33,12 @@
 	padding: 0.15rem;
 	position: relative;
 	justify-content: space-between;
-	transition: background-color 75ms ease-in-out;
+	// transition: background-color 75ms ease-in-out;
 
 	$parent: &;
 
 	&:hover {
-		background-color: darken($tabs, 5);
+		background-color: lighten($tabs, 10%);
 
 		> #{$parent} {
 			&Delete {
@@ -60,4 +59,17 @@
 		right: 0;
 		top: 0;
 	}
+
+	&Selected {
+		background-color: lighten($tabs, 10%);
+	}
+}
+
+.newFolderInput {
+	background-color: $tabs;
+	color: antiquewhite;
+	width: 100%;
+	border: unset;
+	outline: unset;
+	padding: 0.25rem;
 }

@@ -1,4 +1,4 @@
-import CloseIcon from '@/assets/icons/Close'
+import { ReactComponent as CloseIcon } from '@/assets/icons/close.svg'
 import style from './styles.module.scss'
 import { join } from '@/utils'
 

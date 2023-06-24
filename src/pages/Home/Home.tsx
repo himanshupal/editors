@@ -1,4 +1,5 @@
 import { SupportedLanguagesKey, supportedLanguages } from '@/constants'
+import { ReactComponent as CloseIcon } from '@/assets/icons/close.svg'
 import LanguageSelection from '@/components/Modal/LanguageSelection'
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api'
 import { useActivityBarStore, useEditorStore } from '@/store'
@@ -9,7 +10,6 @@ import Split from 'react-split'
 import { join } from '@/utils'
 
 import ActivityBar from '@/components/ActivityBar'
-import CloseIcon from '@/assets/icons/Close'
 import Sidebar from '@/components/Sidebar'
 
 const Home = () => {
@@ -48,8 +48,8 @@ const Home = () => {
 									onClick={() => (tab.model.id === currentModel?.id ? null : setCurrentModel(tab))}
 								>
 									{tab.name || tab.model.id}
-									<span className="tab__close" onClick={(e) => (e.stopPropagation(), closeModel(tab))}>
-										<CloseIcon width={14} height={14} />
+									<span className="tab__close" >
+										<CloseIcon onClick={(e) => (e.stopPropagation(), closeModel(tab))} />
 									</span>
 								</div>
 							))}

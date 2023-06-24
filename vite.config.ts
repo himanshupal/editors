@@ -1,5 +1,6 @@
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
 import { defineConfig } from 'vite';
 import path from 'path';
 
@@ -10,6 +11,7 @@ const basePath = path.resolve(__dirname, 'src');
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
+		svgr(),
 		react(),
 		!production &&
 			nodePolyfills({

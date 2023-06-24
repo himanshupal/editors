@@ -7,6 +7,7 @@ export interface FileOrFolderBase {
 
 export interface Folder extends FileOrFolderBase {
 	isExpanded: boolean;
+	children?: Array<FileOrFolder>;
 }
 
 export interface File extends FileOrFolderBase {

@@ -1,15 +1,17 @@
+import type { ActiveTabs } from '@/types/Zustand';
 import { persist } from 'zustand/middleware';
 import { create } from 'zustand';
 
+
 interface ActivityBarStore {
-	activeTab?: string;
-	setActiveTab(activeTab?: string): void;
+	activeTab?: ActiveTabs;
+	setActiveTab(activeTab?: ActiveTabs): void;
 }
 
 const useActivityBarStore = create<ActivityBarStore>()(
 	persist(
 		(set) => ({
-			setActiveTab: (activeTab?: string) => set({ activeTab }),
+			setActiveTab: (activeTab?: ActiveTabs) => set({ activeTab }),
 		}),
 		{
 			name: 'activityBarStore',

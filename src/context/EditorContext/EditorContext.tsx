@@ -47,6 +47,8 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 	}
 
 	const createModel = (language?: SupportedLanguagesKey, name?: string, fileId?: string) => {
+		const openTab = queue.find((q) => q.fileId === fileId)
+		if (openTab) return changeModelTo(openTab.model)
 		const newModel = monaco.createModel((language && codeSample[language]) || '', language)
 		void changeModelTo(newModel)
 		setQueue([

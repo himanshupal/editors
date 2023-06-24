@@ -58,7 +58,7 @@ body {
 .tab {
 	color: white;
 	font-size: 0.9rem;
-	padding: 0.5rem 0.75rem;
+	padding: 0.5rem 0.35rem 0.5rem 0.5rem;
 	border-right: 1px solid darken($color: $tabs, $amount: 50%);
 	border-top: 1px solid transparent;
 	transition: all 75ms ease-in-out;
