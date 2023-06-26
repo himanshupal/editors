@@ -5,9 +5,9 @@ export interface FileOrFolderBase {
 	parentId?: string;
 }
 
-export interface Folder extends FileOrFolderBase {
+export interface Folder<C = FileOrFolder> extends FileOrFolderBase {
 	isExpanded: boolean;
-	children?: Array<FileOrFolder>;
+	children?: Array<C>;
 }
 
 export interface File extends FileOrFolderBase {
@@ -15,3 +15,4 @@ export interface File extends FileOrFolderBase {
 }
 
 export type FileOrFolder = File | Folder;
+export type FileOrFolderWithPriority = (File | Folder<FileOrFolderWithPriority>) & { isFirst: boolean };
