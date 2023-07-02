@@ -15,16 +15,16 @@ import type { ITreeProps } from './Tree'
 import style from './styles.module.scss'
 
 export interface IFileProps extends Omit<ITreeProps, 'rootId'> {
-	renderInput?: boolean
 	isRoot?: boolean
 }
 
-const File = memo(({ content: f, renderInput, level, deleteFileOrFolder, isRoot }: IFileProps) => {
+const File = memo(({ content: f, renderInput, level, deleteFileOrFolder, forceRenderInput, isRoot }: IFileProps) => {
 	const { selectedItem, setSelectedItem, newFile } = useSidebarStore()
 	const { createModel, expandFolders } = useEditorContext()
 
 	return (
 		<Fragment>
+			{renderInput && f.isFirst && (forceRenderInput || newFile === f.isFile) && <NewFileInput paddingLeft={level * 12} />}
 			{!isRoot && (
 				<div
 					style={level ? { paddingLeft: level * 12 } : undefined}
@@ -50,7 +50,6 @@ const File = memo(({ content: f, renderInput, level, deleteFileOrFolder, isRoot 
 					</span>
 				</div>
 			)}
-			{renderInput && <NewFileInput paddingLeft={(level + Number(!isRoot)) * 12} />}
 		</Fragment>
 	)
 })

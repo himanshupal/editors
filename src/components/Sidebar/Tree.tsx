@@ -8,6 +8,8 @@ import File from './File'
 export interface ITreeProps {
 	deleteFileOrFolder(id: string): React.MouseEventHandler<SVGSVGElement>
 	content: FileOrFolderWithPriority
+	forceRenderInput?: boolean
+	renderInput?: boolean
 	rootId?: string
 	level: number
 }

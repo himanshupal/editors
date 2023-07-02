@@ -102,7 +102,7 @@ const SidebarExplorer = () => {
 					<CollapseAll height={16} width={16} />
 				</span>
 			</div>
-			<div className={style.sidebarContents} onClick={() => selectedItem && setSelectedItem(rootFolder)}>
+			<div className={style.sidebarContents} onClick={() => selectedItem && setSelectedItem(undefined)}>
 				{/* Wrapping to make the clickAway work by making the area covered by files list smaller */}
 				<div>
 					<Tree content={rootFolder} deleteFileOrFolder={deleteFileOrFolder} level={0} rootId={root} />
