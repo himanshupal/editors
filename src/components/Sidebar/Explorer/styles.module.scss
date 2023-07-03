@@ -1,0 +1,45 @@
+.file {
+	display: flex;
+	padding: 0.15rem 0.25rem;
+	position: relative;
+	justify-content: space-between;
+	// transition: background-color 75ms ease-in-out;
+
+	$parent: &;
+
+	&:hover {
+		background-color: lighten($tabs, 10%);
+
+		> #{$parent} {
+			&Delete {
+				display: flex;
+			}
+		}
+	}
+
+	&Delete {
+		width: 25%;
+		display: none;
+		background: linear-gradient(90deg, #0000, #b60202cb);
+		align-items: center;
+		justify-content: flex-end;
+		padding-right: 0.25rem;
+		position: absolute;
+		height: 100%;
+		right: 0;
+		top: 0;
+	}
+
+	&Selected {
+		background-color: lighten($tabs, 10%);
+	}
+}
+
+.newFolderInput {
+	background-color: $tabs;
+	color: antiquewhite;
+	width: 100%;
+	border: unset;
+	outline: unset;
+	padding: 0.25rem;
+}
