@@ -14,7 +14,7 @@ import { ReactComponent as CollapseAll } from '@/assets/icons/collapse-all.svg'
 import { ReactComponent as NewFolder } from '@/assets/icons/new-folder.svg'
 import { ReactComponent as NewFile } from '@/assets/icons/new-file.svg'
 
-import style from './styles.module.scss'
+import style from '../styles.module.scss'
 import Tree from './Tree'
 
 type LiveQueryReturnType = [Map<string, FileOrFolderWithPriority>, FileOrFolder[], FileOrFolderWithPriority[]]
