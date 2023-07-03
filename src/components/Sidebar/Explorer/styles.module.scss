@@ -36,10 +36,12 @@
 }
 
 .newFolderInput {
+	box-shadow: 0 0 0 1px lighten($color: $tabs, $amount: 15);
+	width: calc(100% - 16px - 1px);
 	background-color: $tabs;
 	color: antiquewhite;
-	width: 100%;
+	font-family: Nunito;
 	border: unset;
 	outline: unset;
-	padding: 0.25rem;
+	padding: 0.15rem;
 }

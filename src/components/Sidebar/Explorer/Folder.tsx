@@ -1,7 +1,8 @@
 import type { FileOrFolderWithPriority, Folder } from '@/types/Database'
-import { Fragment, memo, useMemo } from 'react'
+import { Fragment, memo, useEffect, useMemo } from 'react'
 import { isFile } from '@/utils/detectType'
 import { useSidebarStore } from '@/store'
+import storage from '@/store/dexie'
 
 import Tree, { type ITreeProps } from './Tree'
 import NewFileInput from './NewFileInput'
@@ -25,6 +26,11 @@ const Folder = memo(({ content: f, renderInput: r, forceRenderInput: fr, deleteF
 		if (newFile === undefined || !f.children || !renderInput) return false
 		return !f.children.some(({ isFile }) => newFile === isFile)
 	}, [newFile, f, renderInput])
+
+	useEffect(() => {
+		if (!renderInput || isRoot) return
+		if (!f.isExpanded) storage.files.update(f.id, { isExpanded: true })
+	}, [newFile, renderInput])
 
 	return (
 		<Fragment>
