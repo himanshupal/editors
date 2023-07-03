@@ -36,7 +36,7 @@ const Folder = memo(({ content: f, renderInput: r, forceRenderInput: fr, deleteF
 		<Fragment>
 			<File content={f} level={level} renderInput={r} isRoot={isRoot} forceRenderInput={fr} deleteFileOrFolder={deleteFileOrFolder} />
 			{f.isExpanded &&
-				(!f.children
+				(!f.children?.length
 					? renderInput && <NewFileInput paddingLeft={(level + 1) * 12} />
 					: f.children.map((f) => (
 							<Tree
