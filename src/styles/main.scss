@@ -11,6 +11,16 @@ body {
 		'Helvetica Neue', sans-serif;
 }
 
+@font-face {
+	font-family: 'Seti';
+	src: url('/fonts/seti.woff') format('woff');
+}
+
+.file-icon {
+	font-family: Seti;
+	font-style: normal;
+}
+
 .pointer {
 	cursor: pointer;
 }
