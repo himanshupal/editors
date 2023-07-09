@@ -41,7 +41,7 @@ const NewFileInput = memo(({ paddingLeft = 0 }: INewFileInputProps) => {
 					id: newFileId,
 					name: newFileRef.current.value,
 					parentId: selectedItem?.isFile ? selectedItem.parentId : selectedItem?.id, // Allowing only folders to be parent
-					...(isFile ? { type: language } : { isExpanded: true }),
+					...(isFile ? { type: language, content: '' } : { isExpanded: true }),
 				})
 				if (isFile) createModel(language, newFileRef.current.value, newFileId)
 				setNewFile(undefined)

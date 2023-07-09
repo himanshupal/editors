@@ -30,10 +30,10 @@ const SidebarExplorer = () => {
 	const [filesMap, rawFilesList, filesList] = useLiveQuery<LiveQueryReturnType, LiveQueryReturnType>(
 		async () => {
 			let rawData = await storage.files.toArray()
-			const data = rawData.reduce<FileOrFolderWithPriority[]>(
-				(p, c) => [...p, { ...c, isFirst: !p.some(({ isFile, parentId }) => c.parentId === parentId && c.isFile === isFile) }],
-				[]
-			)
+			const data = rawData.reduce<FileOrFolderWithPriority[]>((p, c) => {
+				const isFirst = !p.some(({ isFile, parentId }) => c.parentId === parentId && c.isFile === isFile)
+				return [...p, isFile(c) ? { ...c, isFirst } : { ...c, isFirst, children: undefined }]
+			}, [])
 			// Creating a map below to avoid the find operation each time
 			const map = new Map(data.map((f) => [f.id, f]))
 			for (const f of data) {
