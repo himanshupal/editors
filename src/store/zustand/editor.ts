@@ -15,6 +15,9 @@ interface EditorState {
 	deleteViewState(id: string): void;
 	viewState: { [id: string]: editor.ICodeEditorViewState | null };
 	setViewState(id: string, state: editor.ICodeEditorViewState | null): void;
+
+	activeFileId?: string;
+	setActiveFileId(activeFileId?: string): void;
 }
 
 const useEditorStore = create<EditorState>((set, get) => ({
@@ -23,6 +26,7 @@ const useEditorStore = create<EditorState>((set, get) => ({
 	setQueue: (queue) => set({ queue }),
 	setEditor: (editor) => set({ editor }),
 	setCurrentModel: (currentModel) => set({ currentModel }),
+	setActiveFileId: (activeFileId) => set({ activeFileId }),
 	setViewState: (id, viewState) => set({ viewState: { ...get().viewState, [id]: viewState } }),
 	deleteViewState: (id) => {
 		set({

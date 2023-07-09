@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useLayoutEffect, useRef } from 'react'
+import React, { createContext, useContext, useEffect, useLayoutEffect, useRef } from 'react'
 import type { IEditorContext, ModelInfo } from '@/types/context/EditorContext'
 import { editor as monaco } from 'monaco-editor/esm/vs/editor/editor.api'
 import { errorMessage, type SupportedLanguagesKey } from '@/constants'
@@ -30,10 +30,19 @@ const Context = createContext<IEditorContext>(initialState)
 
 const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 	const { setSelectedItem } = useSidebarStore()
-	const { queue, setQueue, editor, setEditor, currentModel, setCurrentModel, viewState, setViewState, deleteViewState } = useEditorStore(
-		(state) => state,
-		shallow
-	)
+	const {
+		queue,
+		setQueue,
+		editor,
+		setEditor,
+		currentModel,
+		activeFileId,
+		setCurrentModel,
+		viewState,
+		setViewState,
+		deleteViewState,
+		setActiveFileId,
+	} = useEditorStore((state) => state, shallow)
 
 	const initialized = useRef<boolean>(false)
 	const mountElementRef = useRef<HTMLDivElement | null>(null)
@@ -46,6 +55,17 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 		setEditor(monaco.create(mountElementRef.current, defaultEditorConfig))
 		return () => editor?.dispose()
 	}, [])
+
+	const handler = (e: monaco.IModelContentChangedEvent) => {
+		if (!activeFileId || !currentModel) return
+		storage.files.update(activeFileId, { content: currentModel.getValue() })
+	}
+
+	useEffect(() => {
+		if (!currentModel) return
+		const disposableHandle = currentModel.onDidChangeContent(handler)
+		return () => disposableHandle.dispose()
+	}, [currentModel, activeFileId])
 
 	const changeModelTo = async (model: monaco.ITextModel) => {
 		if (!editor) return console.error(errorMessage.noEditor)
@@ -65,10 +85,16 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 		expandFolders(getParentsIdsForFile(fileFromStorage, allFilesFromStorage.filter((f) => !isFile(f)) as Folder[]))
 	}
 
-	const createModel = (language?: SupportedLanguagesKey, name?: string, fileId?: string) => {
+	const createModel = async (language?: SupportedLanguagesKey, name?: string, fileId?: string) => {
 		const openTab = queue.find((q) => q.fileId === fileId)
 		if (openTab) return changeModelTo(openTab.model)
-		const newModel = monaco.createModel((language && codeSample[language]) || '', language)
+		let initialContent = (language && codeSample[language]) || ''
+		if (fileId) {
+			setActiveFileId(fileId)
+			const file = await storage.files.get(fileId)
+			if (file && isFile(file)) initialContent = file.content
+		}
+		const newModel = monaco.createModel(initialContent, language)
 		void changeModelTo(newModel)
 		setQueue([
 			...queue,
@@ -99,7 +125,8 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 				createModel,
 				expandFolders,
 				mountElementRef,
-				setCurrentModel({ model }) {
+				setCurrentModel({ model, fileId }) {
+					setActiveFileId(fileId)
 					changeModelTo(model)
 				},
 			}}

@@ -12,6 +12,7 @@ export interface Folder<C = FileOrFolder> extends FileOrFolderBase {
 
 export interface File extends FileOrFolderBase {
 	type?: string;
+	content: string;
 }
 
 export type FileOrFolder = File | Folder;
