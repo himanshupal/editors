@@ -20,6 +20,7 @@ export const supportedLanguages = [
 	{ key: 'ini', title: 'Ini', extensions: ['ini'] },
 	{ key: 'java', title: 'Java', extensions: ['java'] },
 	{ key: 'javascript', title: 'JavaScript', extensions: ['js', 'jsx'] },
+	{ key: 'json', title: 'JSON', extensions: ['abi', 'json'] },
 	{ key: 'julia', title: 'Julia', extensions: ['jl'] },
 	{ key: 'kotlin', title: 'Kotlin', extensions: ['kt'] },
 	{ key: 'less', title: 'Less', extensions: ['less'] },
