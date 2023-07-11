@@ -67,7 +67,7 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 		return () => disposableHandle.dispose()
 	}, [currentModel, activeFileId])
 
-	const changeModelTo = async (model: monaco.ITextModel) => {
+	const changeModelTo = async (model: monaco.ITextModel, fileId?: string) => {
 		if (!editor) return console.error(errorMessage.noEditor)
 		const oldModelInfo = queue.find((q) => q.model.id === currentModel?.id)
 		if (oldModelInfo) setViewState(oldModelInfo.id, editor.saveViewState())
@@ -77,9 +77,9 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 		setCurrentModel(model)
 		editor.focus()
 
-		if (!newModelInfo?.fileId) return
+		if (!newModelInfo?.fileId && !fileId) return
 		const allFilesFromStorage = await storage.files.toArray()
-		const fileFromStorage = allFilesFromStorage.find(({ id }) => id === newModelInfo.fileId)
+		const fileFromStorage = allFilesFromStorage.find(({ id }) => id === fileId || id === newModelInfo?.fileId)
 		if (!fileFromStorage || !isFile(fileFromStorage)) return
 		setSelectedItem(fileFromStorage)
 		expandFolders(getParentsIdsForFile(fileFromStorage, allFilesFromStorage.filter((f) => !isFile(f)) as Folder[]))
@@ -95,7 +95,7 @@ const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 			if (file && isFile(file)) initialContent = file.content
 		}
 		const newModel = monaco.createModel(initialContent, language)
-		void changeModelTo(newModel)
+		void changeModelTo(newModel, fileId)
 		setQueue([
 			...queue,
 			{

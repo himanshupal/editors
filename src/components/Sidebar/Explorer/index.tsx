@@ -1,9 +1,9 @@
 import type { FileOrFolder, FileOrFolderWithPriority, Folder } from '@/types/Database'
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
+import { getChildrenIds, join, sortStoredFiles } from '@/utils'
 import { useEditorContext } from '@/context/EditorContext'
 import { useEditorStore, useSidebarStore } from '@/store'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { getChildrenIds, join } from '@/utils'
 import { isFile } from '@/utils/detectType'
 import { createPortal } from 'react-dom'
 import Modal from '@/components/Modal'
@@ -30,10 +30,11 @@ const SidebarExplorer = () => {
 	const [filesMap, rawFilesList, filesList] = useLiveQuery<LiveQueryReturnType, LiveQueryReturnType>(
 		async () => {
 			let rawData = await storage.files.toArray()
-			const data = rawData.reduce<FileOrFolderWithPriority[]>((p, c) => {
+			const data = sortStoredFiles(rawData).reduce<FileOrFolderWithPriority[]>((p, c) => {
 				const isFirst = !p.some(({ isFile, parentId }) => c.parentId === parentId && c.isFile === isFile)
 				return [...p, isFile(c) ? { ...c, isFirst } : { ...c, isFirst, children: undefined }]
 			}, [])
+
 			// Creating a map below to avoid the find operation each time
 			const map = new Map(data.map((f) => [f.id, f]))
 			for (const f of data) {

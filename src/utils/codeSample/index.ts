@@ -1,10 +1,12 @@
 import { SupportedLanguagesKey, supportedLanguages } from '@/constants/editors';
-import { isCodeSampleAvailable } from '@/utils/detectType';
 
 import logs from './logs';
 import sol from './sol';
 
 export const codeSampleFor: Partial<Record<SupportedLanguagesKey, string>> = { logs, sol };
+
+export const isCodeSampleAvailable = (key: SupportedLanguagesKey): key is keyof typeof codeSampleFor =>
+	key in codeSampleFor;
 
 const codeSample = supportedLanguages.reduce(
 	(p, c) => ({

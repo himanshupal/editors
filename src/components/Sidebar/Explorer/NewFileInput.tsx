@@ -55,7 +55,11 @@ const NewFileInput = memo(({ paddingLeft = 0 }: INewFileInputProps) => {
 			style={{
 				padding: '0.15rem 0',
 				paddingLeft: `calc(${
-					selectedItem ? (!isFile(selectedItem) || !selectedItem.parentId ? `${paddingLeft}px + 0.25rem` : `${paddingLeft}px`) : `0.25rem`
+					selectedItem
+						? (!isFile(selectedItem) || !selectedItem.parentId) && newFile === undefined
+							? `${paddingLeft}px + 0.25rem`
+							: `${paddingLeft}px`
+						: `0.25rem`
 				})`,
 			}}
 			onSubmit={createFile(newFile)}
